@@ -4,7 +4,17 @@ let PCSpecs = ["Ryzen 5pro", "GTx 1660 TI"];
 
 function addSpec(spec){
     PCSpecs.push(spec);
-    console.log(`${spec} tilføjet!`)
+    console.log(`${spec} Added!!`)
+}
+
+function deleteSpec(spec){
+    const index = PCSpecs.indexOf(spec);
+    if (index > -1) {
+        PCSpecs.splice(index, 1);
+        console.log(`${spec} Deleted!`);
+    } else {
+        console.log(`${spec} not found!`);
+    }
 }
 
 function showSpecs(){
@@ -15,6 +25,8 @@ function showSpecs(){
 }
 
 addSpec("16GB RAM");
+showSpecs();
 addSpec("512GB SSD");
+deleteSpec("16GB RAM");
 
 showSpecs();
