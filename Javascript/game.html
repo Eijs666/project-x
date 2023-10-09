@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>three.js Classroom</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script src="https://threejs.org/build/three.js"></script>
+    <script>
+        let scene = new THREE.Scene();
+        let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        let renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Ground
+        let floorGeometry = new THREE.BoxGeometry(20, 1, 20);
+        let floorMaterial = new THREE.MeshBasicMaterial({color: 0xE5E5E5});
+        let floor = new THREE.Mesh(floorGeometry, floorMaterial);
+        floor.position.y = -0.5;
+        scene.add(floor);
+
+        // Walls
+        let wallMaterial = new THREE.MeshBasicMaterial({color: 0xFFFFFF});
+        let wallGeometry = new THREE.BoxGeometry(20, 10, 1);
+        let wall = new THREE.Mesh(wallGeometry, wallMaterial);
+        wall.position.z = -10;
+        scene.add(wall);
+
+        // Window
+        let windowMaterial = new THREE.MeshBasicMaterial({color: 0xADD8E6, transparent: true, opacity: 0.6});
+        let windowGeometry = new THREE.BoxGeometry(4, 2, 0.1);
+        let windowMesh = new THREE.Mesh(windowGeometry, windowMaterial);
+        windowMesh.position.z = -10.1;
+        windowMesh.position.y = 4;
+        windowMesh.position.x = -6;
+        scene.add(windowMesh);
+
+        // Whiteboard
+        let whiteboardMaterial = new THREE.MeshBasicMaterial({color: 0xFFFFFF});
+        let whiteboardGeometry = new THREE.BoxGeometry(6, 2, 0.1);
+        let whiteboard = new THREE.Mesh(whiteboardGeometry, whiteboardMaterial);
+        whiteboard.position.z = -10.1;
+        whiteboard.position.y = 3;
+        whiteboard.position.x = 5;
+        scene.add(whiteboard);
+
+        // Green Couch
+        let couchGeometry = new THREE.BoxGeometry(4, 1, 1.5);
+        let couchMaterial = new THREE.MeshBasicMaterial({color: 0x008000}); // Green color
+        let couch1 = new THREE.Mesh(couchGeometry, couchMaterial);
+        couch1.position.set(4, 0.5, -7);
+        scene.add(couch1);
+        let couch2 = couch1.clone();
+        couch2.position.set(4, 0.5, -2);
+        scene.add(couch2);
+
+        // Table
+        let tableGeometry = new THREE.BoxGeometry(3, 1, 1.5);
+        let tableMaterial = new THREE.MeshBasicMaterial({color: 0x8B4513}); // Brown color for the table
+        let table = new THREE.Mesh(tableGeometry, tableMaterial);
+        table.position.set(4, 0.5, -4.5);
+        scene.add(table);
+
+        // TV
+        let tvGeometry = new THREE.BoxGeometry(1.5, 1, 0.1);
+        let tvMaterial = new THREE.MeshBasicMaterial({color: 0x000000}); // Black color for the TV
+        let tv = new THREE.Mesh(tvGeometry, tvMaterial);
+        tv.position.set(-8, 2, -10.1);
+        scene.add(tv);
+
+        // Door
+        let doorGeometry = new THREE.BoxGeometry(1.5, 3, 0.1);
+        let doorMaterial = new THREE.MeshBasicMaterial({color: 0x654321}); // Brown color for the door
+        let door = new THREE.Mesh(doorGeometry, doorMaterial);
+        door.position.set(-8, 1.5, 10.1);
+        scene.add(door);
+
+        // School closet
+        let closetGeometry = new THREE.BoxGeometry(10, 4, 1);
+        let closetMaterial = new THREE.MeshBasicMaterial({color: 0x8B4513}); // Brown color for the closet
+        let closet = new THREE.Mesh(closetGeometry, closetMaterial);
+        closet.position.set(5, 2, 10);
+        scene.add(closet);
+
+        // Green couches, tables, TV, door, closet etc can be added similarly...
+
+        camera.position.z = 15;
+        camera.position.y = 10;
+        camera.lookAt(0, -5, 0);
+
+        function animate() {
+            renderer.render(scene, camera);
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
