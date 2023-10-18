@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js Boksning Simulering</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r122/three.min.js"></script>
+    <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+    <script>
+        // Initialiser scene, kamera og renderer
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setClearColor(0xeeeeee); // Baggrundsfarve
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Tilføj en ring
+        const ringGeometry = new THREE.CircleGeometry(5, 32);
+        const ringMaterial = new THREE.MeshBasicMaterial({ color: 0xAAAAAA, side: THREE.DoubleSide });
+        const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+        ring.rotation.x = Math.PI / 2;
+        scene.add(ring);
+
+        // Tilføj boksere som "arme" (cylinder geometri)
+        const armGeometry = new THREE.CylinderGeometry(0.2, 0.2, 2);
+        const box1Material = new THREE.MeshBasicMaterial({ color: 0xFF0000 });
+        const box2Material = new THREE.MeshBasicMaterial({ color: 0x0000FF });
+
+        const arm1 = new THREE.Mesh(armGeometry, box1Material);
+        const arm2 = new THREE.Mesh(armGeometry, box2Material);
+
+        arm1.position.set(-2, 1, 0);
+        arm2.position.set(2, 1, 0);
+
+        arm1.rotation.z = -Math.PI / 2;  
+        arm2.rotation.z = Math.PI / 2;
+
+        scene.add(arm1);
+        scene.add(arm2);
+
+        // Positioner kameraet
+        camera.position.set(0, 5, 10);
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.update();
+
+        // Variabler for jab-animation
+        let jabDistance = 0.05;
+        let maxJab = 1.5;
+        let minJab = -2;
+        let jabbingForward1 = true;
+        let jabbingForward2 = false;
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Simple jab animation for bokser 1
+            if (jabbingForward1) {
+                arm1.position.x += jabDistance;
+                if (arm1.position.x >= maxJab) {
+                    jabbingForward1 = false;
+                }
+            } else {
+                arm1.position.x -= jabDistance;
+                if (arm1.position.x <= minJab) {
+                    jabbingForward1 = true;
+                }
+            }
+
+            // Simple jab animation for bokser 2
+            if (jabbingForward2) {
+                arm2.position.x -= jabDistance;
+                if (arm2.position.x <= -maxJab) {
+                    jabbingForward2 = false;
+                }
+            } else {
+                arm2.position.x += jabDistance;
+                if (arm2.position.x >= -minJab) {
+                    jabbingForward2 = true;
+                }
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+    </script>
+</body>
+
+</html>
