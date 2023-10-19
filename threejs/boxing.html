@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boksesimulator</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script src="https://threejs.org/build/three.js"></script>
+    <script>
+        let scene, camera, renderer, boxer1, boxer2;
+        let jabbing = false;
+
+        init();
+        animate();
+
+        function init() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            // Bokser 1
+            const geometry1 = new THREE.BoxGeometry(1, 2, 0.5);
+            const material1 = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+            boxer1 = new THREE.Mesh(geometry1, material1);
+            scene.add(boxer1);
+            boxer1.position.x = -2;
+
+            // Bokser 2
+            const geometry2 = new THREE.BoxGeometry(1, 2, 0.5);
+            const material2 = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+            boxer2 = new THREE.Mesh(geometry2, material2);
+            scene.add(boxer2);
+            boxer2.position.x = 2;
+
+            // Lys
+            const light = new THREE.PointLight(0xffffff, 1, 1000);
+            light.position.set(0, 0, 10);
+            scene.add(light);
+
+            camera.position.z = 5;
+
+            // Start jabbing animation
+            setInterval(() => {
+                if (!jabbing) {
+                    jabbing = true;
+                    jab(boxer1, 0.5, () => {
+                        jabbing = false;
+                    });
+                }
+            }, 2000);
+        }
+
+        function jab(boxer, distance, callback) {
+            const startPosition = boxer.position.x;
+            const targetPosition = startPosition + distance;
+            const speed = 0.1;
+
+            function moveForward() {
+                if (boxer.position.x < targetPosition) {
+                    boxer.position.x += speed;
+                    requestAnimationFrame(moveForward);
+                } else {
+                    moveBackward();
+                }
+            }
+
+            function moveBackward() {
+                if (boxer.position.x > startPosition) {
+                    boxer.position.x -= speed;
+                    requestAnimationFrame(moveBackward);
+                } else {
+                    callback();
+                }
+            }
+
+            moveForward();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
+    </script>
+</body>
+</html>
