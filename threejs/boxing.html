@@ -12,11 +12,42 @@
 <body>
     <script src="https://threejs.org/build/three.js"></script>
     <script>
-        let scene, camera, renderer, boxer1, boxer2;
+        let scene, camera, renderer;
         let jabbing = false;
 
         init();
         animate();
+
+        function createBoxer(xPosition, color) {
+            const bodyMaterial = new THREE.MeshBasicMaterial({ color: color });
+
+            // Body
+            const body = new THREE.Mesh(new THREE.BoxGeometry(1, 2, 0.5), bodyMaterial);
+            body.position.x = xPosition;
+
+            // Left arm
+            const leftArm = new THREE.Mesh(new THREE.BoxGeometry(0.5, 1, 0.5), bodyMaterial);
+            leftArm.position.x = xPosition - 0.75;
+            leftArm.position.y = 0.5;
+
+            // Right arm
+            const rightArm = new THREE.Mesh(new THREE.BoxGeometry(0.5, 1, 0.5), bodyMaterial);
+            rightArm.position.x = xPosition + 0.75;
+            rightArm.position.y = 0.5;
+
+            // Left leg
+            const leftLeg = new THREE.Mesh(new THREE.BoxGeometry(0.5, 1, 0.5), bodyMaterial);
+            leftLeg.position.x = xPosition - 0.3;
+            leftLeg.position.y = -1.5;
+
+            // Right leg
+            const rightLeg = new THREE.Mesh(new THREE.BoxGeometry(0.5, 1, 0.5), bodyMaterial);
+            rightLeg.position.x = xPosition + 0.3;
+            rightLeg.position.y = -1.5;
+
+            scene.add(body, leftArm, rightArm, leftLeg, rightLeg);
+            return body;
+        }
 
         function init() {
             scene = new THREE.Scene();
@@ -25,21 +56,11 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
             document.body.appendChild(renderer.domElement);
 
-            // Bokser 1
-            const geometry1 = new THREE.BoxGeometry(1, 2, 0.5);
-            const material1 = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-            boxer1 = new THREE.Mesh(geometry1, material1);
-            scene.add(boxer1);
-            boxer1.position.x = -2;
+            // Create boxers
+            createBoxer(-2, 0x00ff00);
+            createBoxer(2, 0xff0000);
 
-            // Bokser 2
-            const geometry2 = new THREE.BoxGeometry(1, 2, 0.5);
-            const material2 = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-            boxer2 = new THREE.Mesh(geometry2, material2);
-            scene.add(boxer2);
-            boxer2.position.x = 2;
-
-            // Lys
+            // Light
             const light = new THREE.PointLight(0xffffff, 1, 1000);
             light.position.set(0, 0, 10);
             scene.add(light);
@@ -50,7 +71,7 @@
             setInterval(() => {
                 if (!jabbing) {
                     jabbing = true;
-                    jab(boxer1, 0.5, () => {
+                    jab(scene.children[0], 0.5, () => {
                         jabbing = false;
                     });
                 }
